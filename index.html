@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CatGPT - Meow Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #ffefd5;
+        }
+        .chat-container {
+            width: 50%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .chat-box {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+            background-color: #fff;
+        }
+        .input-box {
+            width: 100%;
+            padding: 10px;
+        }
+        .send-btn {
+            padding: 10px 20px;
+            background-color: #ff9800;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🐱 Welcome to CatGPT! 🐱</h1>
+    <div class="chat-container">
+        <div class="chat-box" id="chat-box"></div>
+        <input type="text" id="user-input" class="input-box" placeholder="Ask something...">
+        <button class="send-btn" onclick="sendMessage()">Get Answer To Anything</button>
+    </div>
+
+    <script>
+        function sendMessage() {
+            let input = document.getElementById("user-input").value;
+            if (!input) return;
+
+            let chatBox = document.getElementById("chat-box");
+            chatBox.innerHTML += `<p><strong>You:</strong> ${input}</p>`;
+
+            fetch("/analyze", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `text=${encodeURIComponent(input)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                chatBox.innerHTML += `<p><strong>CatGPT:</strong> ${data.ai_response}</p>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            });
+
+            document.getElementById("user-input").value = "";
+        }
+    </script>
+</body>
+</html>
